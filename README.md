@@ -58,16 +58,19 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+## API Document (Swagger)
+```bash
+http://localhost:4000/api-doc
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Document & Diagram (Database)
+URL:
+<a href="https://dbdocs.io/Worasalid%20Juicharoen/Board" target="_blank">https://dbdocs.io/Worasalid%20Juicharoen/Board</a>
 
-## Stay in touch
+Password: 
+Interview2024
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Database Infomation
+MSSQL 2019
+Use TypeORM to manage SQL databases
