@@ -18,9 +18,9 @@ import { ReqCreateCommentDto, ReqEditCommentDto, ReqSearchCommentDto } from './d
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { IAuthUser } from '../auth/interfaces/auth.interface';
 import { PermissionGuard } from 'src/core/authorization/permission.guard';
+import { RespCommentDto } from './dto/response';
 
 @ApiTags('Comment')
-@ApiBearerAuth()
 @Controller()
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
@@ -30,6 +30,8 @@ export class CommentController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'ค้นหาข้อมูล Comment จาก postId',
+    isArray: true,
+    type: RespCommentDto,
   })
   @UsePipes(ValidationPipe)
   findCommentList(@Query() params: ReqSearchCommentDto) {
@@ -37,6 +39,7 @@ export class CommentController {
   }
 
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'create comment' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -48,6 +51,7 @@ export class CommentController {
   }
 
   @Put()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'edit comment' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -60,6 +64,7 @@ export class CommentController {
   }
 
   @Delete(':commentId')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'delete comment' })
   @UseGuards(PermissionGuard)
   deleteComment(@Param('commentId') commentId: number, @AuthUser() user: IAuthUser) {

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentController } from './comment.controller';
 import { TransCommentRepository } from 'src/repositories/trans-comment.repository';
@@ -16,6 +16,9 @@ import { JwtService } from '@nestjs/jwt';
 })
 export class CommentModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleWare).forRoutes(CommentController);
+    consumer
+      .apply(AuthMiddleWare)
+      .exclude({ path: '/comment', method: RequestMethod.GET })
+      .forRoutes(CommentController);
   }
 }
