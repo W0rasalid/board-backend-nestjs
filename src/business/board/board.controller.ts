@@ -21,7 +21,6 @@ import { IAuthUser } from '../auth/interfaces/auth.interface';
 import { PermissionGuard } from 'src/core/authorization/permission.guard';
 
 @ApiTags('Board')
-@ApiBearerAuth()
 @Controller()
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
@@ -38,7 +37,20 @@ export class BoardController {
     return this.boardService.findPosts(params);
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'find post By Id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'ข้อมูล รายละเอียด Post',
+    type: RespPostsDto,
+  })
+  @UsePipes(ValidationPipe)
+  findPostDetails(@Param('id') postId: number) {
+    return this.boardService.findPostDetails(postId);
+  }
+
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'create post' })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
@@ -49,6 +61,7 @@ export class BoardController {
   }
 
   @Put()
+  @ApiBearerAuth()
   @UseGuards(PermissionGuard)
   @ApiOperation({ summary: 'edit post' })
   @ApiResponse({
@@ -60,6 +73,7 @@ export class BoardController {
   }
 
   @Delete(':postId')
+  @ApiBearerAuth()
   @UseGuards(PermissionGuard)
   @ApiOperation({ summary: 'delete post' })
   @ApiResponse({

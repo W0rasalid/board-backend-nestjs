@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
 import { CommentModule } from './comment/comment.module';
 import { RouterModule } from '@nestjs/core';
+import { OurBlogModule } from './our-blog/our-blog.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { RouterModule } from '@nestjs/core';
     AuthModule,
     BoardModule,
     CommentModule,
+    OurBlogModule,
   ],
 })
 export class BusinessModule {}

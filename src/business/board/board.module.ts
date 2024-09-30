@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { BoardController } from './board.controller';
 import { MasCategoryRepository } from 'src/repositories/mas-category.repository';
@@ -34,6 +34,10 @@ import { JwtService } from '@nestjs/jwt';
 })
 export class BoardModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleWare).forRoutes(BoardController);
+    consumer
+      .apply(AuthMiddleWare)
+      .exclude({ path: '/board', method: RequestMethod.GET })
+      .exclude({ path: '/board/:id', method: RequestMethod.GET })
+      .forRoutes(BoardController);
   }
 }

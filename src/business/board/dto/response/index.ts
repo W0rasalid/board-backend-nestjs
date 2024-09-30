@@ -71,11 +71,18 @@ export class RespPostsDto {
   @Expose()
   postId: number;
 
+  @IsObject()
+  @Type(() => CategorySchemaDto)
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  category: CategorySchemaDto;
+
   @IsString()
   @IsOptional()
   @ApiPropertyOptional()
-  @Expose({ name: 'categoryName' })
-  category: string;
+  @Expose()
+  categoryName: string;
 
   @IsString()
   @IsOptional()
@@ -106,10 +113,56 @@ export class RespPostsDto {
   @ApiPropertyOptional()
   @Expose()
   author: string;
+}
+
+export class RespPostsDetailsDto {
+  @IsInt()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  postId: number;
+
+  @IsObject()
+  @Type(() => CategorySchemaDto)
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  category: CategorySchemaDto;
 
   @IsString()
   @IsOptional()
   @ApiPropertyOptional()
   @Expose()
-  profileImage: string;
+  categoryName: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  title: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  description: string;
+
+  @IsInt()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  cntComment: number;
+
+  @IsDate()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  createDate: Date;
+
+  @IsObject()
+  @Type(() => AuthorSchemaDto)
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose({ name: 'userInfo' })
+  author: AuthorSchemaDto;
 }

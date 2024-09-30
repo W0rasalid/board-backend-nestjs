@@ -6,7 +6,7 @@ import { TransPostRepository } from 'src/repositories/trans-post.repository';
 import { ReqCreatePostDto, ReqEditPostDto, ReqSearchPostDto } from './dto/request';
 import { LokiLogger } from 'src/core/logger';
 import { PageResult, Resp, RespSuccess } from 'src/common/dto/resp-common.dto';
-import { RespPostsDto, RespSearchPostsDto } from './dto/response';
+import { RespPostsDetailsDto, RespPostsDto, RespSearchPostsDto } from './dto/response';
 import { plainToInstance } from 'class-transformer';
 import { TransPostEntity } from 'src/entities/trans-post.entity';
 import { IAuthUser } from '../auth/interfaces/auth.interface';
@@ -33,6 +33,31 @@ export class BoardService {
           excludeExtraneousValues: true,
         }),
       } as RespSuccess<PageResult<RespSearchPostsDto>>;
+
+      return resp;
+    } catch (error) {
+      this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
+        controller: 'AuthController',
+        function: this.findPosts.name,
+        service: BoardService.name,
+      });
+
+      throw error;
+    }
+  }
+
+  async findPostDetails(postId: number) {
+    try {
+      const data = await this.postRepo.findOneById(postId);
+
+      const resp: RespSuccess<RespPostsDetailsDto> = {
+        statusCode: HttpStatus.OK,
+        statusText: HttpStatus[HttpStatus.OK],
+        message: 'success',
+        result: plainToInstance(RespPostsDetailsDto, data, {
+          excludeExtraneousValues: true,
+        }),
+      };
 
       return resp;
     } catch (error) {

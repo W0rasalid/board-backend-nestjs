@@ -1,7 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ReqSearchPostDto {
+  @Type(() => Number)
   @IsInt()
   @IsOptional()
   @ApiPropertyOptional()
@@ -12,11 +14,13 @@ export class ReqSearchPostDto {
   @ApiPropertyOptional()
   keyword: string;
 
+  @Type(() => Number)
   @IsInt()
   @IsOptional()
   @ApiPropertyOptional({ default: 10 })
   pageSize: number;
 
+  @Type(() => Number)
   @IsInt()
   @IsOptional()
   @ApiPropertyOptional({ default: 1 })
