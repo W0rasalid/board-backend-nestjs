@@ -19,7 +19,7 @@ export interface ITransPost {
 export interface ITransPostSearchResult {
   no?: number;
   rowCount?: number;
-  category?: string;
+  categoryName?: string;
   author?: string;
   profileImage?: string;
 }

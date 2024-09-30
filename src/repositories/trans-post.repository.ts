@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IAuthUser } from 'src/business/auth/interfaces/auth.interface';
 import { ReqSearchPostDto } from 'src/business/board/dto/request';
 import { PageResult } from 'src/common/dto/resp-common.dto';
 import { ITransPostSearchResult } from 'src/entities/interfaces/trans-post.interface';
@@ -17,7 +18,7 @@ export class TransPostRepository {
     return await this.repository.find({ where: { isDelete: false } });
   }
 
-  async findBySearch(params: ReqSearchPostDto) {
+  async findBySearch(params: ReqSearchPostDto, user?: IAuthUser) {
     const query = this.repository
       .createQueryBuilder('post')
       .select(`CAST(ROW_NUMBER () OVER (ORDER BY post.createDate DESC) AS INT) AS no`)
@@ -37,12 +38,20 @@ export class TransPostRepository {
         `(post.title LIKE '%${params.keyword}%' OR post.description LIKE '%${params.keyword}%')`,
       );
     }
+
+    if (params.categoryId) {
+      query.andWhere('post.categoryId = :categoryId', { categoryId: params.categoryId });
+    }
+
+    if (user) {
+      query.andWhere('post.createId = :userId', { userId: user.id });
+    }
+
     const skip = (params?.pageCurrent ?? 0) * (params?.pageSize ?? 10);
     query.take(params?.pageSize ?? 10);
     query.skip(skip);
 
     const data = await query.getRawMany<ITransPostSearchResult>();
-    console.log(data);
     const rowCount = data[0]?.rowCount ?? 0;
     const result: PageResult<ITransPostSearchResult> = {
       currentPage: Number(params.pageCurrent),
@@ -56,7 +65,10 @@ export class TransPostRepository {
   }
 
   async findOneById(postId: number): Promise<TransPostEntity> {
-    const result = await this.repository.findOneBy({ postId, isDelete: false });
+    const result = await this.repository.findOne({
+      relations: ['category', 'userInfo'],
+      where: { postId, isDelete: false },
+    });
     return result;
   }
 
