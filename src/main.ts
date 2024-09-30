@@ -32,6 +32,9 @@ async function bootstrap() {
             ------------------------------------------
             Author: ${appConfig.apiAuthor}
             Contacts: ${appConfig.apiAuthorEmail}
+            ------------------------------------------
+            Diagram URL: https://dbdocs.io/Worasalid%20Juicharoen/Board
+            Diagram Password: Interview2024
             `,
       )
       .setVersion(appConfig.apiVersion)

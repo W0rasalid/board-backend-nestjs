@@ -6,8 +6,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ReqLoginDto, ReqUserRegisterDto } from './dto/request';
-import { LokiLogger } from 'src/core/logger';
-import { AuthenticationService } from 'src/core/authentication/authentication.service';
+// import { LokiLogger } from 'src/core/logger';
+import { LokiLogger } from '../../core/logger';
+// import { AuthenticationService } from 'src/core/authentication/authentication.service';
+import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { loginDataMock } from 'src/_mockdata/login.mock';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { IAuthUser } from './interfaces/auth.interface';
@@ -56,18 +58,11 @@ export class AuthService {
 
       return resp;
     } catch (error) {
-      this.lokiLogger.error(
-        `(${error.response.statusCode}) ${error.message}`,
-        `trace :`,
-        undefined,
-        {
-          statusCode: error.response.statusCode,
-          error: error.response.statusText,
-          controller: 'AuthController',
-          function: this.login.name,
-          service: AuthService.name,
-        },
-      );
+      this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
+        controller: 'AuthController',
+        function: this.login.name,
+        service: AuthService.name,
+      });
 
       throw error;
     }
@@ -91,18 +86,12 @@ export class AuthService {
       };
       return resp;
     } catch (error) {
-      this.lokiLogger.error(
-        `(${error.response.statusCode}) ${error.message}`,
-        `trace :`,
-        undefined,
-        {
-          statusCode: error.response.statusCode,
-          error: error.response.statusText,
-          controller: 'AuthController',
-          function: this.checkAuth.name,
-          service: AuthService.name,
-        },
-      );
+      console.log('error', error);
+      this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
+        controller: 'AuthController',
+        function: this.checkAuth.name,
+        service: AuthService.name,
+      });
 
       throw error;
     }

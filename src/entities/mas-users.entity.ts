@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { TransPostEntity } from './trans-post.entity';
+import {
+  OneToManyRelationOptions,
+  OneToOneRelationOptions,
+} from 'src/common/entities/relation-option';
+import { TransCommentEntity } from './trans-comment.entity';
 
 @Entity({ name: 'masUsers' })
 export class MasUsersEntity {
@@ -43,4 +49,12 @@ export class MasUsersEntity {
 
   @Column({ name: 'modifyDate', type: 'datetime', nullable: true })
   modifyDate: Date;
+
+  @OneToOne(() => TransPostEntity, (item) => item.userInfo, OneToOneRelationOptions)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'createId' })
+  postInfo: TransPostEntity;
+
+  @OneToOne(() => TransCommentEntity, (item) => item.userInfo, OneToOneRelationOptions)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'createId' })
+  commentList: TransCommentEntity;
 }
