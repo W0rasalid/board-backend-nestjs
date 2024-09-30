@@ -45,7 +45,7 @@ async function bootstrap() {
   }
 
   await app.init();
-  await app.listen(appConfig.port);
+  await app.listen(appConfig.port || 4000);
   console.log(`server running on port: ${appConfig.port}`);
 }
 bootstrap();
