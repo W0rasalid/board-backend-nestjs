@@ -10,15 +10,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
-  ApiBearerAuth,
-  ApiHeader,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { ReqLoginDto, ReqUserActivateDto, ReqUserRegisterDto } from './dto/request';
+  ReqLoginDto,
+  ReqSignInGoogleDto,
+  ReqUserActivateDto,
+  ReqUserRegisterDto,
+} from './dto/request';
 import { RolesGuard } from 'src/core/authorization/roles.guard';
 import { LoginToken } from 'src/common/decorator/token.decorator';
 import { RespLoginDto } from './dto/response';
@@ -78,5 +76,15 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   activateUser(@Query() query: ReqUserActivateDto) {
     return this.authService.activateUser(query.token);
+  }
+
+  @Post('google-signin')
+  @ApiOperation({ summary: 'Google SignIn' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+  })
+  @UsePipes(ValidationPipe)
+  signInGoogle(@Body() params: ReqSignInGoogleDto) {
+    return this.authService.googleSignIn(params);
   }
 }

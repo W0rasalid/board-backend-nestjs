@@ -5,7 +5,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ReqLoginDto, ReqUserRegisterDto } from './dto/request';
+import { ReqLoginDto, ReqSignInGoogleDto, ReqUserRegisterDto } from './dto/request';
 // import { LokiLogger } from 'src/core/logger';
 import { LokiLogger } from '../../core/logger';
 // import { AuthenticationService } from 'src/core/authentication/authentication.service';
@@ -188,6 +188,77 @@ export class AuthService {
           service: AuthService.name,
         },
       );
+
+      throw error;
+    }
+  }
+
+  async googleSignIn(params: ReqSignInGoogleDto) {
+    try {
+      const user = await this.userRepo.findOneByEmail(params.email);
+      console.log('user', user);
+      if (user) {
+        if (user.googleId !== params.sub) {
+          throw new UnauthorizedException('Please use your google account to login');
+        }
+        const payload: IAuthUser = {
+          id: user.userId,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          fullName: `${user.firstName} ${user.lastName}`,
+
+          role: user.userRole,
+        };
+
+        const token = await this.authService.jwtSignToken(payload, '32400s');
+        const resp: RespSuccess<RespLoginDto> = {
+          statusCode: HttpStatus.OK,
+          statusText: HttpStatus[HttpStatus.OK],
+          message: 'success',
+          result: plainToInstance(RespLoginDto, { token }),
+        };
+
+        return resp;
+      } else {
+        const newData = new MasUsersEntity();
+        newData.userName = params.email;
+        newData.email = params.email;
+        newData.firstName = params.givenName;
+        newData.lastName = params.familyName;
+        newData.profileImage = params.picture;
+        newData.userRole = 'user';
+        newData.isActive = true;
+        newData.isDelete = false;
+        newData.createDate = new Date();
+        newData.googleId = params.sub;
+        const newUser = await this.userRepo.saveData(newData);
+
+        const payload: IAuthUser = {
+          id: newUser.userId,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          fullName: `${newUser.firstName} ${newUser.lastName}`,
+          role: newUser.userRole,
+        };
+
+        const token = await this.authService.jwtSignToken(payload, '32400s');
+        const resp: RespSuccess<RespLoginDto> = {
+          statusCode: HttpStatus.OK,
+          statusText: HttpStatus[HttpStatus.OK],
+          message: 'success',
+          result: plainToInstance(RespLoginDto, { token }),
+        };
+
+        return resp;
+      }
+    } catch (error) {
+      this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
+        controller: 'AuthController',
+        function: this.login.name,
+        service: AuthService.name,
+      });
 
       throw error;
     }

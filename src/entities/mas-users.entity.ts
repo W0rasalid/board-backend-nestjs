@@ -50,6 +50,9 @@ export class MasUsersEntity {
   @Column({ name: 'modifyDate', type: 'datetime', nullable: true })
   modifyDate: Date;
 
+  @Column({ name: 'googleId', type: 'nvarchar', length: 50, nullable: true })
+  googleId: string;
+
   @OneToOne(() => TransPostEntity, (item) => item.userInfo, OneToOneRelationOptions)
   @JoinColumn({ name: 'userId', referencedColumnName: 'createId' })
   postInfo: TransPostEntity;
