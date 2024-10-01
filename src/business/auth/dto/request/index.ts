@@ -45,3 +45,35 @@ export class ReqUserActivateDto {
   @ApiProperty()
   token: string;
 }
+
+export class ReqSignInGoogleDto {
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  familyName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  givenName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  picture: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  sub: string;
+}

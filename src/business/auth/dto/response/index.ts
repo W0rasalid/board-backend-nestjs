@@ -76,4 +76,10 @@ export class RespAuthMeDto {
   @ApiPropertyOptional()
   @Expose({ name: 'userRole' })
   role: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  profileImage: string;
 }
