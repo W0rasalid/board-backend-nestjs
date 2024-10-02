@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { IAppConfig } from './configuration/interfaces/app-config.interface';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import otelSDK from './core/observability/opentelemetry/telemetry';
+import * as swaggerStats from 'swagger-stats';
 
 async function bootstrap() {
   otelSDK.start();
@@ -43,6 +44,23 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api-doc', app, document);
   }
+
+  //Swagger Stats
+  app.use(
+    swaggerStats.getMiddleware({
+      name: 'a Board Stats',
+      swaggerSpec: null,
+      hostname: 'localhost',
+      uriPath: '/monitor',
+      authentication: true,
+      onAuthenticate: function (req, username, password) {
+        // check for username and password
+        if (username === appConfig.swaggerStatsUser && password === appConfig.swaggerStatsPass) {
+          return true;
+        }
+      },
+    }),
+  );
 
   await app.init();
   await app.listen(appConfig.port || 4000);

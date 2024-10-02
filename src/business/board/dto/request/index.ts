@@ -48,6 +48,10 @@ export class ReqEditPostDto {
   @ApiProperty()
   postId: number;
 
+  @IsInt()
+  @ApiProperty()
+  categoryId: number;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty()

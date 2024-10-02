@@ -78,6 +78,12 @@ export class RespPostsDto {
   @Expose()
   category: CategorySchemaDto;
 
+  @IsInt()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  categoryId: number;
+
   @IsString()
   @IsOptional()
   @ApiPropertyOptional()
@@ -113,6 +119,12 @@ export class RespPostsDto {
   @ApiPropertyOptional()
   @Expose()
   author: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional()
+  @Expose()
+  profileImage: string;
 }
 
 export class RespPostsDetailsDto {
