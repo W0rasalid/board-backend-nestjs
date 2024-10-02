@@ -66,6 +66,13 @@ export class TransPostRepository {
 
   async findOneById(postId: number): Promise<TransPostEntity> {
     const result = await this.repository.findOne({
+      where: { postId, isDelete: false },
+    });
+    return result;
+  }
+
+  async findOneRelationById(postId: number): Promise<TransPostEntity> {
+    const result = await this.repository.findOne({
       relations: ['category', 'userInfo'],
       where: { postId, isDelete: false },
     });

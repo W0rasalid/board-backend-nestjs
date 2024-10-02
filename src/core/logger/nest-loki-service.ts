@@ -19,7 +19,7 @@ export class LokiLogger extends Logger implements ILabels {
     super(context);
   }
 
-  static lokiUrl = '';
+  static lokiUrl = 'https://logs-prod-006.grafana.net';
   static defaultLabels: any = {};
   static logToConsole = false;
   static gzip = false;
@@ -42,9 +42,16 @@ export class LokiLogger extends Logger implements ILabels {
     axios({
       method: 'POST',
       url: `${LokiLogger.lokiUrl}/loki/api/v1/push`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: LokiLogger.gzip
+        ? {
+            'Content-Type': 'application/json',
+            'Content-Encoding': 'application/gzip',
+            Authorization: `Bearer ${process.env.LOKI_USER}:${process.env.LOKI_TOKEN}`,
+          }
+        : {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.LOKI_USER}:${process.env.LOKI_TOKEN}`,
+          },
       data: data,
     })
       .then()

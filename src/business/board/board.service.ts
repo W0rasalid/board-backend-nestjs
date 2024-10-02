@@ -48,7 +48,7 @@ export class BoardService {
 
   async findPostDetails(postId: number) {
     try {
-      const data = await this.postRepo.findOneById(postId);
+      const data = await this.postRepo.findOneRelationById(postId);
 
       const resp: RespSuccess<RespPostsDetailsDto> = {
         statusCode: HttpStatus.OK,
@@ -107,8 +107,10 @@ export class BoardService {
       if (!data) {
         throw new NotFoundException('Post not found');
       }
-
+      console.log('data', data);
+      console.log('params', params);
       data.title = params.title;
+      data.categoryId = params.categoryId;
       data.description = params.description;
       data.modifyId = user.id;
       data.modifyName = user.fullName;

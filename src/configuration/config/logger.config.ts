@@ -3,7 +3,7 @@ import { ILokiLoggerConfig } from '../interfaces/logger-config.interface';
 
 const lokiLoggerConfig = registerAs('loki', (): ILokiLoggerConfig => {
   return {
-    lokiUrl: process.env.LOKI_URL || 'http://localhost:3100',
+    lokiUrl: process.env.LOKI_URL || 'https://logs-prod-006.grafana.net',
     labels: {
       product: 'Board',
       enviroment: process.env.API_ENVIRONMENT || 'development',
