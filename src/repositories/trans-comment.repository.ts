@@ -24,7 +24,8 @@ export class TransCommentRepository {
       .addSelect('CAST(COUNT(1) OVER () AS INT)', 'rowCount')
       .addSelect(['c.*', `user.firstName + ' ' + user.lastName as author`, 'user.profileImage'])
       .leftJoinAndSelect('c.userInfo', 'user')
-      .where('c.isDelete = :isDelete', { isDelete: false });
+      .where('c.isDelete = :isDelete', { isDelete: false })
+      .andWhere('c.postId = :postId', { postId: params.postId });
 
     const skip = (params?.pageCurrent ?? 0) * (params?.pageSize ?? 10);
     query.take(params?.pageSize ?? 10);

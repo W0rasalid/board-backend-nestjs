@@ -11,6 +11,7 @@ interface ILabels {
   traceId?: string;
   statusCode?: string;
   error?: any;
+  createdBy?: string;
 }
 
 @Injectable()

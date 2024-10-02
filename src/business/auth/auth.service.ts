@@ -56,6 +56,11 @@ export class AuthService {
         result: plainToInstance(RespLoginDto, { token }),
       };
 
+      this.lokiLogger.info(`login success (form login)`, undefined, {
+        createdBy: `${user.firstName} ${user.lastName}`,
+        service: AuthService.name,
+      });
+
       return resp;
     } catch (error) {
       this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
@@ -138,18 +143,13 @@ export class AuthService {
 
       return resp;
     } catch (error) {
-      this.lokiLogger.error(
-        `(${error.response.statusCode}) ${error.message}`,
-        `trace :`,
-        undefined,
-        {
-          statusCode: error.response.statusCode,
-          error: error.response.statusText,
-          controller: 'AuthController',
-          function: this.register.name,
-          service: AuthService.name,
-        },
-      );
+      this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
+        statusCode: error.response.statusCode,
+        error: error.response.statusText,
+        controller: 'AuthController',
+        function: this.register.name,
+        service: AuthService.name,
+      });
 
       throw error;
     }
@@ -176,18 +176,13 @@ export class AuthService {
         return resp;
       }
     } catch (error) {
-      this.lokiLogger.error(
-        `(${error.response.statusCode}) ${error.message}`,
-        `trace :`,
-        undefined,
-        {
-          statusCode: error.response.statusCode,
-          error: error.response.statusText,
-          controller: 'AuthController',
-          function: this.activateUser.name,
-          service: AuthService.name,
-        },
-      );
+      this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
+        statusCode: error.response.statusCode,
+        error: error.response.statusText,
+        controller: 'AuthController',
+        function: this.activateUser.name,
+        service: AuthService.name,
+      });
 
       throw error;
     }
@@ -196,7 +191,6 @@ export class AuthService {
   async googleSignIn(params: ReqSignInGoogleDto) {
     try {
       const user = await this.userRepo.findOneByEmail(params.email);
-      console.log('user', user);
       if (user) {
         if (user.googleId !== params.sub) {
           throw new UnauthorizedException('Please use your google account to login');
@@ -218,6 +212,11 @@ export class AuthService {
           message: 'success',
           result: plainToInstance(RespLoginDto, { token }),
         };
+
+        this.lokiLogger.info(`login success (OAuth)`, undefined, {
+          createdBy: `${user.firstName} ${user.lastName}`,
+          service: AuthService.name,
+        });
 
         return resp;
       } else {
@@ -250,6 +249,11 @@ export class AuthService {
           message: 'success',
           result: plainToInstance(RespLoginDto, { token }),
         };
+
+        this.lokiLogger.info(`signIn success (With Gmail)`, undefined, {
+          createdBy: `${user.firstName} ${user.lastName}`,
+          service: AuthService.name,
+        });
 
         return resp;
       }

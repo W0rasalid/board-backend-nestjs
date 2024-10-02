@@ -5,7 +5,7 @@ const lokiLoggerConfig = registerAs('loki', (): ILokiLoggerConfig => {
   return {
     lokiUrl: process.env.LOKI_URL || 'https://logs-prod-006.grafana.net',
     labels: {
-      product: 'Board',
+      product: 'aBoard',
       enviroment: process.env.API_ENVIRONMENT || 'development',
     },
     logToConsole: true,
