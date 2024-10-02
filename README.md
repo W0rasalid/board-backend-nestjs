@@ -50,17 +50,20 @@ $ npm run start:prod
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ## API Document (Swagger)
 ```bash
 http://localhost:4000/api-doc
+```
+
+## API Observability (Swagger Stats)
+```bash
+http://localhost:4000/monitor
+
+#for login
+user: admin
+pass: 1234
 ```
 
 ## Document & Diagram (Database)
@@ -74,3 +77,11 @@ Interview2024
 ## Database Infomation
 MSSQL 2019
 Use TypeORM to manage SQL databases
+
+
+## Log (with Grafana Loki)
+URL
+https://worasalid.grafana.net/public-dashboards/04d9bb32ca0e4a609fb6cd74f23746d2
+
+## Metric (Grafana dashboard)
+https://worasalid.grafana.net/public-dashboards/84bf1601513d443297d2274b48b8f066
