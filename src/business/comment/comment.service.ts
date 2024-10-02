@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { LokiLogger } from 'src/core/logger';
 import { TransCommentRepository } from 'src/repositories/trans-comment.repository';
 import { ReqCreateCommentDto, ReqEditCommentDto, ReqSearchCommentDto } from './dto/request';
@@ -7,11 +7,19 @@ import { PageResult, Resp, RespSuccess } from 'src/common/dto/resp-common.dto';
 import { RespCommentDto } from './dto/response';
 import { TransCommentEntity } from 'src/entities/trans-comment.entity';
 import { IAuthUser } from '../auth/interfaces/auth.interface';
+import { TransPostRepository } from 'src/repositories/trans-post.repository';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class CommentService {
   private readonly lokiLogger = new LokiLogger(CommentService.name);
-  constructor(private readonly commentRepo: TransCommentRepository) {}
+
+  @InjectDataSource() private dataSource: DataSource;
+  constructor(
+    private readonly commentRepo: TransCommentRepository,
+    private readonly postRepo: TransPostRepository,
+  ) {}
 
   async findCommentList(params: ReqSearchCommentDto) {
     try {
@@ -39,7 +47,19 @@ export class CommentService {
   }
 
   async createComment(params: ReqCreateCommentDto, user: IAuthUser) {
+    const trans = this.dataSource.createQueryRunner();
+    await trans.connect();
+    await trans.startTransaction();
+
     try {
+      const postData = await this.postRepo.findOneById(params.postId);
+      if (!postData) {
+        throw new NotFoundException('Post not found');
+      }
+
+      postData.cntComment = postData.cntComment + 1;
+      await this.postRepo.saveData(postData, trans.manager);
+
       const newData = new TransCommentEntity();
       newData.postId = params.postId;
       newData.description = params.description;
@@ -47,13 +67,19 @@ export class CommentService {
       newData.createId = user.id;
       newData.createName = user.fullName;
       newData.createDate = new Date();
-      await this.commentRepo.saveData(newData);
+      await this.commentRepo.saveData(newData, trans.manager);
+      await trans.commitTransaction();
 
       const resp: Resp = {
         statusCode: HttpStatus.OK,
         statusText: HttpStatus[HttpStatus.OK],
         message: 'success',
       };
+
+      this.lokiLogger.info(`create comment success`, undefined, {
+        createdBy: user.fullName,
+        service: CommentService.name,
+      });
 
       return resp;
     } catch (error) {
@@ -63,6 +89,7 @@ export class CommentService {
         service: CommentService.name,
       });
 
+      await trans.rollbackTransaction();
       throw error;
     }
   }

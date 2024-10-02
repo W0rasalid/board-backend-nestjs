@@ -89,6 +89,11 @@ export class BoardService {
         message: 'success',
       };
 
+      this.lokiLogger.info(`create post success`, undefined, {
+        createdBy: user.fullName,
+        service: BoardService.name,
+      });
+
       return resp;
     } catch (error) {
       this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
@@ -107,8 +112,7 @@ export class BoardService {
       if (!data) {
         throw new NotFoundException('Post not found');
       }
-      console.log('data', data);
-      console.log('params', params);
+
       data.title = params.title;
       data.categoryId = params.categoryId;
       data.description = params.description;
@@ -122,6 +126,11 @@ export class BoardService {
         statusText: HttpStatus[HttpStatus.OK],
         message: 'success',
       };
+
+      this.lokiLogger.info(`edit post success`, undefined, {
+        createdBy: user.fullName,
+        service: BoardService.name,
+      });
 
       return resp;
     } catch (error) {
@@ -147,6 +156,19 @@ export class BoardService {
       data.modifyName = user.fullName;
       data.modifyDate = new Date();
       await this.postRepo.saveData(data);
+
+      this.lokiLogger.info(`delete post success`, undefined, {
+        createdBy: user.fullName,
+        service: BoardService.name,
+      });
+
+      const resp: Resp = {
+        statusCode: HttpStatus.OK,
+        statusText: HttpStatus[HttpStatus.OK],
+        message: 'success',
+      };
+
+      return resp;
     } catch (error) {
       this.lokiLogger.error(`${error.message}`, `trace :`, undefined, {
         controller: 'BoardController',
